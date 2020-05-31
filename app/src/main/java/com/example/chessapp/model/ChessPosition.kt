@@ -1,5 +1,6 @@
 package com.example.chessapp.model
 
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
 
 class ChessPosition ()
@@ -82,6 +83,19 @@ class ChessPosition ()
         return output
     }
 
+    fun checkMove(fromField: String, toField:String):Boolean
+    {
+        analyze()
+
+        for (move:Move in this.validMoves) {
+            if (move.fromField == fromField && move.toField == toField) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     fun analyze()
     {
         this.validMoves = ArrayList<Move>()
@@ -103,7 +117,7 @@ class ChessPosition ()
                 'R' -> return Rook(COLOR_WHITE).getValidMoves(this, line, row)
                 'B' -> return Bishop(COLOR_WHITE).getValidMoves(this, line, row)
                 'N' -> return Knight(COLOR_WHITE).getValidMoves(this, line, row)
-                //'P' -> return Pawn(COLOR_WHITE).getValidMoves(this, line, row)
+                'P' -> return Pawn(COLOR_WHITE).getValidMoves(this, line, row)
             }
         } else {
             when (piece) {
@@ -112,7 +126,7 @@ class ChessPosition ()
                 'r' -> return Rook(COLOR_BLACK).getValidMoves(this, line, row)
                 'b' -> return Bishop(COLOR_BLACK).getValidMoves(this, line, row)
                 'n' -> return Knight(COLOR_BLACK).getValidMoves(this, line, row)
-                //'p' -> return Pawn(COLOR_BLACK).getValidMoves(this, line, row)
+                'p' -> return Pawn(COLOR_BLACK).getValidMoves(this, line, row)
             }
         }
         return emptyList()
