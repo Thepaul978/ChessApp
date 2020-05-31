@@ -68,20 +68,24 @@ class MainActivity : AppCompatActivity()
                     if (position.getPieceColor(piece) == position.colorToMove) {
                         fromField = field
                         newMove = false
+                        debugView.setText("Clicked on : " + fromField)
                     }
                 } else {
-                    var piece = position.getPieceFromField(field)
-                    if (position.getPieceColor(piece) != position.colorToMove) {
-                        toField = field
+                    toField = field
+                    position.analyze()
+                    if (position.checkMove(fromField, toField)) {
                         movePiece(fromField, toField)
-                        newMove = true
                         turn = turn + 1
-                        if(turn%2 == 0) {
+                        if ((turn % 2) == 0) {
                             textView.setText("Wit is aan zet")
                         } else {
                             textView.setText("Zwart is aan zet")
                         }
+                        debugView.setText("Zet : " + fromField + " - " + toField)
+                    } else {
+                        debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
                     }
+                    newMove = true
                 }
             }
         }
