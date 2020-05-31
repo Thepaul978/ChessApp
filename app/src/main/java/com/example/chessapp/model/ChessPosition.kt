@@ -1,6 +1,6 @@
 package com.example.chessapp.model
 
-import kotlinx.android.synthetic.main.activity_main.*
+import android.util.Log
 import java.util.ArrayList
 
 class ChessPosition ()
@@ -85,8 +85,6 @@ class ChessPosition ()
 
     fun checkMove(fromField: String, toField:String):Boolean
     {
-        analyze()
-
         for (move:Move in this.validMoves) {
             if (move.fromField == fromField && move.toField == toField) {
                 return true
@@ -96,15 +94,42 @@ class ChessPosition ()
         return false
     }
 
-    fun analyze()
+    fun analyze(checkCounterMoves:Boolean)
     {
         this.validMoves = ArrayList<Move>()
 
+        var candidateMoves = ArrayList<Move>()
         for (line in 1..8) {
             for (row in 1..8) {
                 val piece = this.chessboard[line - 1][row - 1]
-                this.validMoves.addAll(analyzeMoves(piece, line, row))
+                candidateMoves.addAll(analyzeMoves(piece, line, row))
             }
+        }
+
+        if (checkCounterMoves) {
+            for (move:Move in candidateMoves) {
+                var isValidMove = true
+
+                var newPosition = ChessPosition()
+                newPosition.parsePosition(this.toFenString())
+                newPosition.doMove(move.fromField, move.toField)
+
+                var kingField = newPosition.getKingField(this.colorToMove)
+                newPosition.analyze(false)
+
+                for (counterMove in newPosition.validMoves) {
+                    if (counterMove.toField == kingField) {
+                        isValidMove = false
+                        break
+                    }
+                }
+
+                if (isValidMove) {
+                    this.validMoves.add(move)
+                }
+            }
+        } else {
+            this.validMoves.addAll(candidateMoves)
         }
     }
 
@@ -130,6 +155,19 @@ class ChessPosition ()
             }
         }
         return emptyList()
+    }
+
+    fun doMove(fromField:String, toField:String)
+    {
+        var fromLine = fromField.toCharArray()[0].toInt() - 96
+        var fromRow  = fromField.toCharArray()[1].toInt() - 48
+        var toLine   = toField.toCharArray()[0].toInt() - 96
+        var toRow    = toField.toCharArray()[1].toInt() - 48
+
+        this.chessboard[toLine - 1][toRow - 1] = this.chessboard[fromLine - 1][fromRow - 1]
+        this.chessboard[fromLine - 1][fromRow - 1] = ' '
+
+        this.colorToMove = 3 - this.colorToMove
     }
 
     fun getPieceByCoordinates(line:Int, row:Int):Char
@@ -165,17 +203,19 @@ class ChessPosition ()
         }
     }
 
-    fun doMove(fromField:String, toField:String)
+    fun getKingField(color:Int):String
     {
-        var fromLine = fromField.toCharArray()[0].toInt() - 96
-        var fromRow  = fromField.toCharArray()[1].toInt() - 48
-        var toLine   = toField.toCharArray()[0].toInt() - 96
-        var toRow    = toField.toCharArray()[1].toInt() - 48
+        var piece = (if (color == COLOR_WHITE) 'K' else 'k')
 
-        this.chessboard[toLine - 1][toRow - 1] = this.chessboard[fromLine - 1][fromRow - 1]
-        this.chessboard[fromLine - 1][fromRow - 1] = ' '
+        for (line in 1..8) {
+            for (row in 1..8) {
+                if (getPieceByCoordinates(line, row) == piece) {
+                    return getFieldByCoordinates(line, row)
+                }
+            }
+        }
 
-        this.colorToMove = 3 - this.colorToMove
+        return ""
     }
 
     fun setColorToMoveWhite()

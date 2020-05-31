@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity()
         startButton.setOnClickListener {
             position.setColorToMoveWhite()
             textView.setText("Wit is aan zet")
+            debugView.setText("")
             chessBoardView.overlay.clear()
             drawBoard()
             setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
@@ -61,31 +62,35 @@ class MainActivity : AppCompatActivity()
     private val handleTouch = View.OnTouchListener { v, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                var field = getClickedField(event);
-                Log.i("DEBUGLOG" , "Clicked on " + field + " - NewMove = " + newMove.toString())
-                if (newMove) {
-                    var piece = position.getPieceFromField(field)
-                    if (position.getPieceColor(piece) == position.colorToMove) {
-                        fromField = field
-                        newMove = false
-                        debugView.setText("Clicked on : " + fromField)
-                    }
-                } else {
-                    toField = field
-                    position.analyze()
-                    if (position.checkMove(fromField, toField)) {
-                        movePiece(fromField, toField)
-                        turn = turn + 1
-                        if ((turn % 2) == 0) {
-                            textView.setText("Wit is aan zet")
-                        } else {
-                            textView.setText("Zwart is aan zet")
+                if (position.validMoves.size > 0) {
+                    var field = getClickedField(event);
+                    if (newMove) {
+                        var piece = position.getPieceFromField(field)
+                        if (position.getPieceColor(piece) == position.colorToMove) {
+                            fromField = field
+                            newMove = false
+                            debugView.setText("Klik op veld : " + fromField)
                         }
-                        debugView.setText("Zet : " + fromField + " - " + toField)
                     } else {
-                        debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
+                        toField = field
+                        if (position.checkMove(fromField, toField)) {
+                            movePiece(fromField, toField)
+                            if (position.validMoves.size == 0) {
+                                textView.setText("Schaakmat : " + (if (position.isWhiteToMove()) "Zwart" else "Wit") + " heeft gewonnen")
+                            } else {
+                                turn = turn + 1
+                                if ((turn % 2) == 0) {
+                                    textView.setText("Wit is aan zet")
+                                } else {
+                                    textView.setText("Zwart is aan zet")
+                                }
+                            }
+                            debugView.setText("Zet : " + fromField + " - " + toField)
+                        } else {
+                            debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
+                        }
+                        newMove = true
                     }
-                    newMove = true
                 }
             }
         }
@@ -127,6 +132,7 @@ class MainActivity : AppCompatActivity()
 
     fun setPosition(fenString: String) {
         position.parsePosition(fenString)
+        position.analyze(true)
 
         for (line in 1..8) {
             for (row in 1..8) {
@@ -190,6 +196,7 @@ class MainActivity : AppCompatActivity()
         }
 
         position.doMove(fromField, toField)
+        position.analyze(true)
     }
 
     fun getPieceIcon(piece: Char): Int {
