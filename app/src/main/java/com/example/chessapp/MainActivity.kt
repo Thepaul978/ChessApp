@@ -14,15 +14,23 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat.getDrawable
-import com.example.chessapp.R
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.chessapp.database.GameViewModel
+import com.example.chessapp.database.MoveData
 import com.example.chessapp.model.ChessPosition
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity()
 {
+    private lateinit var gameViewModel: GameViewModel
+
     val fieldWidth  = 135
     val fieldHeight = 137
 
@@ -33,13 +41,31 @@ class MainActivity : AppCompatActivity()
     var fromField = ""
     var toField   = ""
 
-    var turn = 0
+    var turn = 1
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
+        /**if(linearLayout.isNotEmpty()) {
+            linearLayout.removeAllViews()
+        }**/
+        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        gameViewModel.getLastMove().observe(this, Observer<MoveData>{ data ->
+            if(data!=null) {
+                Log.i("DEBUGLOG", "Last move: " + data.toString())
+                if(turn > 1) {
+                    val textView: TextView = TextView(this)
+                    Log.i("DEBUGLOG", "Piece on field: " + data.piece)
+                    textView.text =
+                        data.piece + data.fromField + " - " + data.toField
+                    linearLayout.addView(textView)
+                    scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+                }
+            }
+        })
         //debugView.text = "Hello World!"
         Log.i("DEBUGLOG" , "Start of program")
 
@@ -47,9 +73,12 @@ class MainActivity : AppCompatActivity()
         setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
 
         startButton.setOnClickListener {
+            gameViewModel.deleteAll()
+            linearLayout.removeAllViews()
+            turn = 1
             position.setColorToMoveWhite()
             textView.setText("Wit is aan zet")
-            debugView.setText("")
+            //debugView.setText("")
             chessBoardView.overlay.clear()
             drawBoard()
             setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
@@ -59,17 +88,17 @@ class MainActivity : AppCompatActivity()
         chessBoardView.setOnTouchListener(handleTouch)
     }
 
+
     private val handleTouch = View.OnTouchListener { v, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (position.validMoves.size > 0) {
-                    var field = getClickedField(event);
+                    var field = getClickedField(event)
                     if (newMove) {
                         var piece = position.getPieceFromField(field)
                         if (position.getPieceColor(piece) == position.colorToMove) {
                             fromField = field
                             newMove = false
-                            debugView.setText("Klik op veld : " + fromField)
                         }
                     } else {
                         toField = field
@@ -80,14 +109,25 @@ class MainActivity : AppCompatActivity()
                             } else {
                                 turn = turn + 1
                                 if ((turn % 2) == 0) {
-                                    textView.setText("Wit is aan zet")
-                                } else {
                                     textView.setText("Zwart is aan zet")
+                                } else {
+                                    textView.setText("Wit is aan zet")
                                 }
                             }
-                            debugView.setText("Zet : " + fromField + " - " + toField)
+                            Snackbar.make(
+                                chessBoardView,
+                                "Zet : " + fromField + " - " + toField,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+
+                           // debugView.setText("Zet : " + fromField + " - " + toField)
                         } else {
-                            debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
+                            //debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
+                            Snackbar.make(
+                                chessBoardView,
+                                "Ongeldige zet : " + fromField + " - " + toField,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                         }
                         newMove = true
                     }
@@ -195,8 +235,13 @@ class MainActivity : AppCompatActivity()
             chessBoardView.run { chessBoardView.overlay.remove(piece2) }
         }
 
+        gameViewModel.insert(MoveData(turn, position.toFenString(), fromField, toField, position.getPieceDutchNotation(fromField).toString()))
         position.doMove(fromField, toField)
         position.analyze(true)
+
+
+
+
     }
 
     fun getPieceIcon(piece: Char): Int {

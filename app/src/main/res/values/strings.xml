@@ -2,4 +2,7 @@
     <string name="app_name">ChessApp</string>
     <string name="welcome">Welkom bij de schaak app van Paul Oomen</string>
     <string name="start">Start</string>
+    <string name="add_word">Start</string>
+    <string name="reset">Reset Game</string>
+    <string name="witAanZet">Wit is aan zet</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.chessapp.model
 
 import android.util.Log
+import com.example.chessapp.R
 import java.util.ArrayList
 
 class ChessPosition ()
@@ -176,7 +177,7 @@ class ChessPosition ()
             return ' '
         }
 
-        return this.chessboard[line - 1][row - 1];
+        return this.chessboard[line - 1][row - 1]
     }
 
     fun getPieceFromField(field:String):Char
@@ -187,10 +188,24 @@ class ChessPosition ()
         return getPieceByCoordinates(line, row)
     }
 
+    fun getPieceDutchNotation(field:String):Char{
+        var piece: Char = getPieceFromField(field).toUpperCase()
+        when (piece) {
+            'K' -> return 'K'
+            'Q' -> return 'D'
+            'R' -> return 'T'
+            'B' -> return 'L'
+            'N' -> return 'P'
+            'P' -> return ' '
+        }
+        return ' '
+    }
+
     fun getFieldByCoordinates(line:Int, row:Int):String
     {
         return (line + 96).toChar().toString() + (row + 48).toChar().toString()
     }
+
 
     fun getPieceColor(piece:Char):Int
     {
