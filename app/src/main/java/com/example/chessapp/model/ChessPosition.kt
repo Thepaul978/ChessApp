@@ -171,6 +171,10 @@ class ChessPosition ()
         this.colorToMove = 3 - this.colorToMove
     }
 
+    fun isCheckMate() : Boolean{
+        return this.validMoves.size == 0
+    }
+
     fun getPieceByCoordinates(line:Int, row:Int):Char
     {
         if (line < 1 || line > 8 || row < 1 || row > 8) {

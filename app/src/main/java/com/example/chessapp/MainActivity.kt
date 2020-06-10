@@ -1,6 +1,7 @@
 package com.example.chessapp
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,29 +13,42 @@ import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.chessapp.adapter.GameHistoryAdapter
+import com.example.chessapp.database.Game
 import com.example.chessapp.database.GameViewModel
 import com.example.chessapp.database.MoveData
+import com.example.chessapp.model.ChessGame
 import com.example.chessapp.model.ChessPosition
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.ceil
 
+
 class MainActivity : AppCompatActivity()
 {
     private lateinit var gameViewModel: GameViewModel
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewManager: RecyclerView.LayoutManager
 
     val fieldWidth  = 135
     val fieldHeight = 137
 
     val position : ChessPosition = ChessPosition()
+    val game: ChessGame = ChessGame()
     var pieces = Array(8) {Array<Drawable?>(8) { null} }
 
     var newMove = true
@@ -66,28 +80,20 @@ class MainActivity : AppCompatActivity()
                 }
             }
         })
-        //debugView.text = "Hello World!"
-        Log.i("DEBUGLOG" , "Start of program")
-
-        drawBoard()
-        setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
-
+        initializeGame()
         startButton.setOnClickListener {
+            initializeGame()
             gameViewModel.deleteAll()
             linearLayout.removeAllViews()
-            turn = 1
-            position.setColorToMoveWhite()
-            textView.setText("Wit is aan zet")
-            //debugView.setText("")
             chessBoardView.overlay.clear()
-            drawBoard()
-            setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
-
         }
-
-        chessBoardView.setOnTouchListener(handleTouch)
     }
-
+    private fun initializeGame() {
+        turn = 1
+        drawBoard()
+        setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w")
+        game.initialize()
+    }
 
     private val handleTouch = View.OnTouchListener { v, event ->
         when (event.action) {
@@ -104,22 +110,40 @@ class MainActivity : AppCompatActivity()
                         toField = field
                         if (position.checkMove(fromField, toField)) {
                             movePiece(fromField, toField)
-                            if (position.validMoves.size == 0) {
-                                textView.setText("Schaakmat : " + (if (position.isWhiteToMove()) "Zwart" else "Wit") + " heeft gewonnen")
+                            if (position.isCheckMate()) {
+                                //TODO: save chessgame + game.toString() bevat lijst met alles FEN 
+                                val toast = Toast.makeText(
+                                    applicationContext,
+                                    "Schaakmat : " + (if (position.isWhiteToMove()) "Zwart" else "Wit") + " heeft gewonnen",
+                                    Toast.LENGTH_LONG
+                                )
+                                toast.show()
+                                //textView.setText("Schaakmat : " + (if (position.isWhiteToMove()) "Zwart" else "Wit") + " heeft gewonnen")
                             } else {
                                 turn = turn + 1
                                 if ((turn % 2) == 0) {
-                                    textView.setText("Zwart is aan zet")
+                                    val toast = Toast.makeText(
+                                        applicationContext,
+                                        "Zwart is aan zet",
+                                        Toast.LENGTH_LONG
+                                    )
+                                    toast.show()
                                 } else {
-                                    textView.setText("Wit is aan zet")
+                                    val toast = Toast.makeText(
+                                        applicationContext,
+                                        "Wit is aan zet",
+                                        Toast.LENGTH_LONG
+                                    )
+                                    toast.show()
                                 }
                             }
+                            /**
                             Snackbar.make(
                                 chessBoardView,
                                 "Zet : " + fromField + " - " + toField,
                                 Snackbar.LENGTH_SHORT
                             ).show()
-
+**/
                            // debugView.setText("Zet : " + fromField + " - " + toField)
                         } else {
                             //debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
@@ -237,6 +261,7 @@ class MainActivity : AppCompatActivity()
 
         gameViewModel.insert(MoveData(turn, position.toFenString(), fromField, toField, position.getPieceDutchNotation(fromField).toString()))
         position.doMove(fromField, toField)
+        game.addPosition(position.toFenString())
         position.analyze(true)
 
 
@@ -262,5 +287,9 @@ class MainActivity : AppCompatActivity()
                 return 0
             }
         }
+    }
+
+    fun undoLastMove() {
+        
     }
 }

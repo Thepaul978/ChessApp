@@ -6,18 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(MoveData::class), version = 2, exportSchema = false)
-public abstract class GameRoomDatabase : RoomDatabase() {
+@Database(entities = arrayOf(Game::class), version = 1, exportSchema = false)
+public abstract class GameHistoryDatabase : RoomDatabase() {
 
-    abstract fun gameDao(): GameDao
+    abstract fun gameHistoryDao(): GameHistoryDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the
         // same time.
         @Volatile
-        private var INSTANCE: GameRoomDatabase? = null
+        private var INSTANCE: GameHistoryDatabase? = null
 
-        fun getDatabase(context: Context): GameRoomDatabase {
+        fun getDatabase(context: Context): GameHistoryDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {
                 return tempInstance
@@ -25,9 +25,9 @@ public abstract class GameRoomDatabase : RoomDatabase() {
             synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    GameRoomDatabase::class.java,
-                    "game_database"
-                ).fallbackToDestructiveMigration()
+                    GameHistoryDatabase::class.java,
+                    "game__history_database"
+                )//.fallbackToDestructiveMigration()
                  .build()
                 INSTANCE = instance
                 return instance

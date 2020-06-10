@@ -19,5 +19,4 @@ interface GameDao {
 
     @Query("DELETE FROM game_table")
     fun deleteAll()
-
 }

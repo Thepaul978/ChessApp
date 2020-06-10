@@ -17,7 +17,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
 
     init {
-        val gamesDao = GameRoomDatabase.getDatabase(application).gameDao()
+        val gamesDao = MoveDatabase.getDatabase(application).gameDao()
         repository = GameRepository(gamesDao)
 
     }

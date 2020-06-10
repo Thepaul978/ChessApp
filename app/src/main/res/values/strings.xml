@@ -5,4 +5,6 @@
     <string name="add_word">Start</string>
     <string name="reset">Reset Game</string>
     <string name="witAanZet">Wit is aan zet</string>
+    <string name="notities">Notities</string>
+    <string name="activity_history_title">Title</string>
 </resources>
