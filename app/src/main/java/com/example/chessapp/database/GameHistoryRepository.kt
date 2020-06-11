@@ -18,7 +18,7 @@ class GameHistoryRepository(private val gameHistoryDao: GameHistoryDao) {
         gameHistoryDao.deleteAll()
     }
 
-    fun getAllHistory() {
-        gameHistoryDao.getAllHistory()
+    fun getAllHistory():List<Game> {
+        return gameHistoryDao.getAllHistory()
     }
 }

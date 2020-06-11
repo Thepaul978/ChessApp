@@ -15,7 +15,7 @@ interface GameHistoryDao {
     @Query("DELETE FROM history_table")
     fun deleteAll()
 
-    @Query("SELECT * FROM history_table")
+    @Query("SELECT * FROM history_table ORDER BY id DESC")
     fun getAllHistory(): List<Game>
 
 }

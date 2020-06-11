@@ -3,11 +3,9 @@ package com.example.chessapp.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity(tableName = "history_table")
 data class Game(
-
    @PrimaryKey(autoGenerate = true)
    @ColumnInfo(name = "id")
    var id : Int,
@@ -26,4 +24,9 @@ data class Game(
 
    @ColumnInfo(name = "gameData")
    var gameData: String
-)
+   ) {
+   constructor(
+      date: String, whitePlayer: String, blackPlayer: String, result: Int, gameData: String) : this(0, date, whitePlayer, blackPlayer, result, gameData
+   )
+}
+

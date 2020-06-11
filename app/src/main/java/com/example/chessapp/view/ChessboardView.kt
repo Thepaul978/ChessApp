@@ -11,10 +11,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.util.DisplayMetrics
+import android.view.MotionEvent
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import com.example.chessapp.R
+import kotlin.math.ceil
 
 class ChessboardView (private val chessboardView: ImageView, private val windowManager: WindowManager, private val resources: Resources)
 {
@@ -67,6 +69,41 @@ class ChessboardView (private val chessboardView: ImageView, private val windowM
 
         drawable!!.bounds = Rect(left, top, right, bottom)
         chessboardView.run { chessboardView.overlay.add(drawable) }
+    }
+
+    fun movePiece(fromField:String, toField:String) {
+        var fromLine = fromField.toCharArray()[0].toInt() - 96
+        var fromRow  = fromField.toCharArray()[1].toInt() - 48
+        var toLine   = toField.toCharArray()[0].toInt() - 96
+        var toRow    = toField.toCharArray()[1].toInt() - 48
+
+        var piece1 = pieces[fromLine-1][fromRow-1]
+        var piece2 = pieces[toLine-1][toRow-1]
+
+        if (piece1 == null) {
+            return
+        }
+
+        var left   = (toLine - 1) * fieldWidth + 1
+        var right  = toLine * fieldWidth
+        var top    = (8 - toRow) * fieldHeight + 1
+        var bottom = (9 - toRow) * fieldHeight
+
+        piece1!!.bounds = Rect(left, top, right, bottom)
+
+        pieces[toLine-1][toRow-1]     = pieces[fromLine-1][fromRow-1]
+        pieces[fromLine-1][fromRow-1] = null
+
+        if (piece2 != null) {
+            chessboardView.run { chessboardView.overlay.remove(piece2) }
+        }
+    }
+
+    fun getClickedField(event: MotionEvent):String {
+        var line = ceil(event.x.toInt() / fieldWidth.toDouble()).toInt()
+        var row  = 9 - ceil(event.y.toInt() / fieldHeight.toDouble()).toInt()
+
+        return Character.toString((96 + line).toChar()) + Character.toString((48 + row).toChar())
     }
 
     fun getPieceIcon(piece: Char): Int {
