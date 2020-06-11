@@ -2,27 +2,18 @@ package com.example.chessapp
 
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
+import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.selection.*
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chessapp.adapter.GameHistoryAdapter
 import com.example.chessapp.adapter.GameItemDetailsLookup
-import com.example.chessapp.database.Game
-import com.example.chessapp.database.GameRepository
 import com.example.chessapp.model.ChessPosition
 import com.example.chessapp.view.ChessboardView
 import kotlinx.android.synthetic.main.activity_history.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
-import kotlin.collections.ArrayList
+import kotlinx.android.synthetic.main.name_dialog.view.*
 
 class GameHistoryActivity : AppCompatActivity(){
 
@@ -42,6 +33,10 @@ class GameHistoryActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
+
+        infoButton.setOnClickListener {
+            askInfo()
+        }
 
         viewManager = LinearLayoutManager(this)
 
@@ -86,6 +81,22 @@ class GameHistoryActivity : AppCompatActivity(){
         val games = selection.map {
             viewAdapter.games[it.toInt()]
         }.toList()
+
+        }
+    }
+
+    private fun askInfo(){
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.name_dialog, null)
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+            .setTitle("User Info")
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.dialogLoginBtn.setOnClickListener {
+            mAlertDialog.dismiss()
+
+            val name1 =  mDialogView.dialogName1.text.toString()
+            val name2 = mDialogView.dialogName2.text.toString()
 
         Log.i("DEBUGLOG", games.get(0).whitePlayer + " - " + games.get(0).blackPlayer)
     }

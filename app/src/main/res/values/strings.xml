@@ -7,4 +7,7 @@
     <string name="witAanZet">Wit is aan zet</string>
     <string name="notities">Notities</string>
     <string name="activity_history_title">Title</string>
+    <string name="enterName1">Enter name of player: White</string>
+    <string name="enterName2">Enter name of player: Black</string>
+    <string name="submit">Save Game</string>
 </resources>
