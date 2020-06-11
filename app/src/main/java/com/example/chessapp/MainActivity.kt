@@ -48,10 +48,12 @@ class MainActivity : AppCompatActivity()
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
-        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        chessboardView = ChessboardView(ivChessboard, windowManager, getResources())
+
+        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         gameViewModel.getLastMove().observe(this, Observer<MoveData> { data ->
             if (data != null) {
                 if (turn > 1) {
@@ -66,14 +68,14 @@ class MainActivity : AppCompatActivity()
 
         initializeGame()
 
-        resetButton.setOnClickListener {
+        btReset.setOnClickListener {
             gameViewModel.deleteAll()
             linearLayout.removeAllViews()
             ivChessboard.overlay.clear()
             initializeGame()
         }
 
-        saveButton.setOnClickListener {
+        btSave.setOnClickListener {
             askInfo()
         }
 
@@ -146,6 +148,7 @@ class MainActivity : AppCompatActivity()
         chessboardView.drawBoard()
         setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w")
         game.initialize()
+        position.analyze(true)
 
         Log.i("DEBUGLOG", "Initialized game")
     }
