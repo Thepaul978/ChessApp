@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/dateView"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_margin="4dp"
+        android:text="TextView"
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/whitePlayerView"
+        android:id="@+id/whitePlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_margin="4dp"
+        android:text="TextView"
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/blackPlayerView"
+        android:id="@+id/blackPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_margin="4dp"
+        android:text="TextView"
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/resultView"
+        android:id="@+id/result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_margin="4dp"
+        android:text="TextView"
+        android:textSize="18sp" />
 </LinearLayout>
