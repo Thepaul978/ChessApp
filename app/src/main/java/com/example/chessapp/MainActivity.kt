@@ -1,7 +1,6 @@
 package com.example.chessapp
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -13,27 +12,26 @@ import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.GestureDetector
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.PopupWindow
+import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chessapp.adapter.GameHistoryAdapter
-import com.example.chessapp.database.Game
 import com.example.chessapp.database.GameViewModel
 import com.example.chessapp.database.MoveData
 import com.example.chessapp.model.ChessGame
 import com.example.chessapp.model.ChessPosition
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.name_dialog.view.*
 import kotlin.math.ceil
 
 
@@ -61,19 +59,16 @@ class MainActivity : AppCompatActivity()
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         /**if(linearLayout.isNotEmpty()) {
-            linearLayout.removeAllViews()
+        linearLayout.removeAllViews()
         }**/
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        gameViewModel.getLastMove().observe(this, Observer<MoveData>{ data ->
-            if(data!=null) {
-                Log.i("DEBUGLOG", "Last move: " + data.toString())
-                if(turn > 1) {
+        gameViewModel.getLastMove().observe(this, Observer<MoveData> { data ->
+            if (data != null) {
+                if (turn > 1) {
                     val textView: TextView = TextView(this)
-                    Log.i("DEBUGLOG", "Piece on field: " + data.piece)
                     textView.text =
                         data.piece + data.fromField + " - " + data.toField
                     linearLayout.addView(textView)
@@ -81,28 +76,30 @@ class MainActivity : AppCompatActivity()
                 }
             }
         })
+
         initializeGame()
-        startButton.setOnClickListener {
-            initializeGame()
+
+        resetButton.setOnClickListener {
             gameViewModel.deleteAll()
             linearLayout.removeAllViews()
-            chessBoardView.overlay.clear()
+            ivChessboard.overlay.clear()
+            initializeGame()
+        }
+
+        saveButton.setOnClickListener {
+            askInfo()
+        }
+
+        ivChessboard.setOnTouchListener { view, event ->
+            handleTouch(view, event)
+            true
         }
     }
 
-
-
-
-    private fun initializeGame() {
-        turn = 1
-        drawBoard()
-        setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w")
-        game.initialize()
-    }
-
-    private val handleTouch = View.OnTouchListener { v, event ->
+    private fun handleTouch(view: View, event: MotionEvent) {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                Log.i("DEBUGLOG", "In handleTouch methode")
                 if (position.validMoves.size > 0) {
                     var field = getClickedField(event)
                     if (newMove) {
@@ -116,7 +113,7 @@ class MainActivity : AppCompatActivity()
                         if (position.checkMove(fromField, toField)) {
                             movePiece(fromField, toField)
                             if (position.isCheckMate()) {
-                                //TODO: save chessgame + game.toString() bevat lijst met alles FEN 
+                                //TODO: save chessgame + game.toString() bevat lijst met alles FEN
                                 val toast = Toast.makeText(
                                     applicationContext,
                                     "Schaakmat : " + (if (position.isWhiteToMove()) "Zwart" else "Wit") + " heeft gewonnen",
@@ -142,18 +139,9 @@ class MainActivity : AppCompatActivity()
                                     toast.show()
                                 }
                             }
-                            /**
-                            Snackbar.make(
-                                chessBoardView,
-                                "Zet : " + fromField + " - " + toField,
-                                Snackbar.LENGTH_SHORT
-                            ).show()
-**/
-                           // debugView.setText("Zet : " + fromField + " - " + toField)
                         } else {
-                            //debugView.setText("Ongeldige zet : " + fromField + " - " + toField)
                             Snackbar.make(
-                                chessBoardView,
+                                ivChessboard,
                                 "Ongeldige zet : " + fromField + " - " + toField,
                                 Snackbar.LENGTH_SHORT
                             ).show()
@@ -163,8 +151,15 @@ class MainActivity : AppCompatActivity()
                 }
             }
         }
+    }
 
-        true
+    private fun initializeGame() {
+        turn = 1
+        drawBoard()
+        setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w")
+        game.initialize()
+
+        Log.i("DEBUGLOG", "Initialized game")
     }
 
     fun getClickedField(event:MotionEvent):String {
@@ -196,7 +191,7 @@ class MainActivity : AppCompatActivity()
             }
         }
 
-        chessBoardView.background = BitmapDrawable(getResources(), bitmap)
+        ivChessboard.background = BitmapDrawable(getResources(), bitmap)
     }
 
     fun setPosition(fenString: String) {
@@ -231,7 +226,7 @@ class MainActivity : AppCompatActivity()
         pieces[line-1][row-1] = drawable
 
         drawable!!.bounds = Rect(left, top, right, bottom)
-        chessBoardView.run { chessBoardView.overlay.add(drawable) }
+        ivChessboard.run { ivChessboard.overlay.add(drawable) }
     }
 
     @SuppressLint("NewApi")
@@ -261,17 +256,13 @@ class MainActivity : AppCompatActivity()
         pieces[fromLine-1][fromRow-1] = null
 
         if (piece2 != null) {
-            chessBoardView.run { chessBoardView.overlay.remove(piece2) }
+            ivChessboard.run { ivChessboard.overlay.remove(piece2) }
         }
 
         gameViewModel.insert(MoveData(turn, position.toFenString(), fromField, toField, position.getPieceDutchNotation(fromField).toString()))
         position.doMove(fromField, toField)
-        game.addPosition(position.toFenString())
+        game.addMove(fromField, toField)
         position.analyze(true)
-
-
-
-
     }
 
     fun getPieceIcon(piece: Char): Int {
@@ -296,5 +287,23 @@ class MainActivity : AppCompatActivity()
 
     fun undoLastMove() {
         
+    }
+
+    private fun askInfo(){
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.name_dialog, null)
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+            .setTitle("User Info")
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.dialogLoginBtn.setOnClickListener {
+            mAlertDialog.dismiss()
+
+            val name1 = mDialogView.dialogName1.text.toString()
+            val name2 = mDialogView.dialogName2.text.toString()
+        }
+
+        //game.toString()
+
     }
 }
