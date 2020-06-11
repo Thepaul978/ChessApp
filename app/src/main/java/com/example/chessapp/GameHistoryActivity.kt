@@ -102,15 +102,17 @@ class GameHistoryActivity : AppCompatActivity(){
             viewAdapter.games[it.toInt()]
         }.toList()
 
-        Log.i("DEBUGLOG", games.get(0).whitePlayer + " - " + games.get(0).blackPlayer)
+        val selectedGame = games.get(0)
+        game.parse(selectedGame.gameData)
+        Log.i("DEBUGLOG", selectedGame.whitePlayer + " - " + selectedGame.blackPlayer)
+        Log.i("DEBUGLOG", selectedGame.gameData)
 
-        Log.i("DEBUGLOG", games.get(0).gameData)
-        game.parse(games.get(0).gameData)
-        for (i in 1..game.getNumberOfMoves()) {
-            Log.i("DEBUGLOG", game.getMove(i) + " [" + game.getPosition(i) + "]")
-        }
         moveNumber = 0
         setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w")
+        tvSelectedGame.text =
+            "Players   : " + selectedGame.whitePlayer + " - " + selectedGame.blackPlayer +  "\r\n" +
+            "Date      : " + selectedGame.date + "\r\n" +
+            "Moves     : " + game.getNumberOfMoves()
         tvLastMove.text = ""
     }
 
@@ -118,7 +120,7 @@ class GameHistoryActivity : AppCompatActivity(){
         if (moveNumber > 1) {
             moveNumber--
             setPosition(game.getPosition(moveNumber))
-            tvLastMove.text = game.getMove(moveNumber)
+            tvLastMove.text = "Last Move : " + game.getMove(moveNumber)
         } else {
             setPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w")
             tvLastMove.text = ""
@@ -129,7 +131,7 @@ class GameHistoryActivity : AppCompatActivity(){
         if (moveNumber < game.getNumberOfMoves()) {
             moveNumber++
             setPosition(game.getPosition(moveNumber))
-            tvLastMove.text = game.getMove(moveNumber)
+            tvLastMove.text = "Last Move : " + game.getMove(moveNumber)
         }
     }
 

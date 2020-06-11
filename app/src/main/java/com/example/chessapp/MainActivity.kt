@@ -197,11 +197,11 @@ class MainActivity : AppCompatActivity()
             try {
                 strDate = SimpleDateFormat("yyyy-MM-dd").format(Date())
             } catch (e: ParseException) {
-                // TODO Auto-generated catch block
+                // ignore
             }
 
             gameHistoryViewModel = ViewModelProvider(this).get(GameHistoryViewModel::class.java)
-            gameHistoryViewModel.insert(Game(strDate, name1, name2, 1, game.toString()))
+            gameHistoryViewModel.insert(Game(strDate, name1, name2, position.getResult(), game.toString()))
 
             startActivity(Intent(applicationContext, GameHistoryActivity::class.java))
         }

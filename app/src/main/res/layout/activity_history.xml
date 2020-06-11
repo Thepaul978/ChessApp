@@ -25,50 +25,69 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.758"
+        app:layout_constraintVertical_bias="0.751"
         tools:itemCount="1" />
+
+    <TextView
+        android:id="@+id/tvSelectedGame"
+        android:layout_width="390dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="75dp"
+        android:background="#ffffff"
+        android:fontFamily="monospace"
+        android:padding="4dp"
+        android:text=""
+        android:textAlignment="textStart"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLastMove"
+        android:layout_width="390dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="55dp"
+        android:background="#ffffff"
+        android:fontFamily="monospace"
+        android:padding="4dp"
+        android:text=""
+        android:textAlignment="textStart"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btPrevMove"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="Previous"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tvLastMove"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="264dp"
-        android:layout_marginBottom="80dp"
-        android:text=""
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:id="@+id/btNextMove"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginStart="144dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="Next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:id="@+id/btNewGame"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginStart="280dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="New Game"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

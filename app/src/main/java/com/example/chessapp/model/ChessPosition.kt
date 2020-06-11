@@ -1,7 +1,5 @@
 package com.example.chessapp.model
 
-import android.util.Log
-import com.example.chessapp.R
 import java.util.ArrayList
 
 class ChessPosition ()
@@ -173,6 +171,17 @@ class ChessPosition ()
 
     fun isCheckMate() : Boolean{
         return this.validMoves.size == 0
+    }
+
+    fun getResult() : Int{
+        if (isCheckMate()) {
+            if (isWhiteToMove()) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     fun getPieceByCoordinates(line:Int, row:Int):Char
