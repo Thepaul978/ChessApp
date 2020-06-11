@@ -10,4 +10,12 @@
     <string name="enterName1">Enter name of player: White</string>
     <string name="enterName2">Enter name of player: Black</string>
     <string name="submit">Confirm</string>
+    <string name="save_game">Save Game</string>
+    <string name="exit">Exit</string>
+    <string name="new_game">New Game</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="chessboard">ChessBoard</string>
+    <string name="textview">TextView</string>
+    <string name="delete">Delete</string>
 </resources>

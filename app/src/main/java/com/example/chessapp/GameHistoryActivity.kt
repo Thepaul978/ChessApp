@@ -60,6 +60,10 @@ class GameHistoryActivity : AppCompatActivity(){
             showNextMove()
         }
 
+        btDelete.setOnClickListener{
+            gameHistoryViewModel.deleteAll()
+        }
+
         btNewGame.setOnClickListener {
             startActivity(Intent(applicationContext, MainActivity::class.java))
         }
