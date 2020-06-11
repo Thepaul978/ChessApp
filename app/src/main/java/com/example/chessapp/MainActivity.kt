@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.PopupWindow
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -88,6 +89,10 @@ class MainActivity : AppCompatActivity()
             chessBoardView.overlay.clear()
         }
     }
+
+
+
+
     private fun initializeGame() {
         turn = 1
         drawBoard()

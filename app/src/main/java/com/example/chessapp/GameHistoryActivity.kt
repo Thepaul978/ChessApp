@@ -1,6 +1,9 @@
 package com.example.chessapp
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.PopupWindow
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +12,7 @@ import com.example.chessapp.adapter.GameHistoryAdapter
 import com.example.chessapp.database.Game
 import com.example.chessapp.database.GameRepository
 import kotlinx.android.synthetic.main.activity_history.*
+import kotlinx.android.synthetic.main.name_dialog.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +38,10 @@ class GameHistoryActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history)
 
+        infoButton.setOnClickListener {
+            askInfo()
+        }
+
         games = ArrayList<Game>()
         games.add(Game(1, "2020-06-10", "Paul", "Erik", 1, "asdas"))
         games.add(Game(2, "2020-06-10", "Danie", "Mama", 2, "asdas"))
@@ -51,6 +59,22 @@ class GameHistoryActivity : AppCompatActivity(){
 
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
+
+        }
+    }
+
+    private fun askInfo(){
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.name_dialog, null)
+        val mBuilder = AlertDialog.Builder(this)
+            .setView(mDialogView)
+            .setTitle("User Info")
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.dialogLoginBtn.setOnClickListener {
+            mAlertDialog.dismiss()
+
+            val name1 =  mDialogView.dialogName1.text.toString()
+            val name2 = mDialogView.dialogName2.text.toString()
 
         }
     }
