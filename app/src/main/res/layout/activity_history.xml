@@ -46,16 +46,13 @@
 
     <TextView
         android:id="@+id/tvLastMove"
-        android:layout_width="390dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="55dp"
-        android:background="#ffffff"
-        android:fontFamily="monospace"
-        android:padding="4dp"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginBottom="80dp"
         android:text=""
-        android:textAlignment="textStart"
-        android:textSize="12sp"
+        android:textAlignment="center"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -66,7 +63,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="5dp"
-        android:text="Previous"
+        android:text="@string/previous"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -75,19 +72,29 @@
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginStart="144dp"
-        android:layout_marginBottom="5dp"
-        android:text="Next"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_marginBottom="10dp"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btNewGame"
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:layout_marginStart="280dp"
-        android:layout_marginBottom="5dp"
-        android:text="New Game"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_marginBottom="10dp"
+        android:text="@string/new_game"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btDelete"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="280dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/delete"
+        app:layout_constraintBottom_toTopOf="@+id/btNewGame"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
