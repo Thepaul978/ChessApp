@@ -25,19 +25,20 @@ import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chessapp.database.GameViewModel
-import com.example.chessapp.database.MoveData
+import com.example.chessapp.database.*
 import com.example.chessapp.model.ChessGame
 import com.example.chessapp.model.ChessPosition
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.name_dialog.view.*
+import java.util.*
 import kotlin.math.ceil
 
 
 class MainActivity : AppCompatActivity()
 {
     private lateinit var gameViewModel: GameViewModel
+    private lateinit var gameHistoryViewModel: GameHistoryViewModel
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
@@ -285,11 +286,9 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    fun undoLastMove() {
-        
-    }
-
     private fun askInfo(){
+        var name1 : String = ""
+        var name2 : String = ""
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.name_dialog, null)
         val mBuilder = AlertDialog.Builder(this)
             .setView(mDialogView)
@@ -299,11 +298,12 @@ class MainActivity : AppCompatActivity()
         mDialogView.dialogLoginBtn.setOnClickListener {
             mAlertDialog.dismiss()
 
-            val name1 = mDialogView.dialogName1.text.toString()
-            val name2 = mDialogView.dialogName2.text.toString()
+            name1 = mDialogView.dialogName1.text.toString()
+            name2 = mDialogView.dialogName2.text.toString()
+            var currentDate : String = Date().toString()
+            gameHistoryViewModel = ViewModelProvider(this).get(GameHistoryViewModel::class.java)
+            gameHistoryViewModel.insert(Game(1, currentDate, name1, name2, 1, game.toString()))
+            Log.i("DEBUGLOG" , "Database info " + gameHistoryViewModel.getAllHistory().toString())
         }
-
-        //game.toString()
-
     }
 }
